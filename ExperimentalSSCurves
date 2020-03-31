@@ -1,0 +1,126 @@
+% Code to Stress-Strain Curve from Compression Testing 
+% of meta-materials of variable stiffness
+ 
+% This code was created by Nathan Brown in fulfillment of his masters
+% thesis in mechanical engineering
+ 
+%Most recent edits: 3/3/2020
+ 
+ 
+%Comp1 -The experiment was run as a set load compression of 800 N. The compression
+% rate was 20 N/sec.
+ 
+%Comp2- The experiment was run as a displacement of -0.01mm/sec. 
+%Material Slabs were 60mmX60mmX4.7625mm
+%Experiment run 9/18/2019
+% Use 3 5 3 3 for analysis 
+%Comp 3-5 The experiment was run to a set force of 1050N at a rate of
+%Comp 4,5 were from a single print sample
+%10N/sec
+close all
+%Comp 6,7 were a comparison of different looking materials 
+clc
+clear
+%Number of Data Sets Imported
+Sets=8;
+% 00-3 02-3 04-4 06-3 09-3 14-4 27-3 30-7
+%Importing Data Files 
+T_1(:,1:2)=xlsread('DA00_Comp3.csv','B:C');
+ 
+T_2(:,1:2)=xlsread('DA02_Comp3.csv','B:C');
+ 
+T_3(:,1:2)=xlsread('DA04_Comp4.csv','B:C');
+ 
+T_4(:,1:2)=xlsread('DA06_Comp3.csv','B:C');
+ 
+T_5(:,1:2)=xlsread('DA09_Comp3.csv','B:C');
+ 
+T_6(:,1:2)=xlsread('DA14_Comp4.csv','B:C');
+ 
+T_7(:,1:2)=xlsread('DA27_Comp3.csv','B:C');
+ 
+T_8(:,1:2)=xlsread('Comp30_Comp7.csv','B:C');
+ 
+ 
+ 
+ 
+lengthvec=[length(T_1),length(T_2),length(T_3),length(T_4),length(T_5),length(T_6),length(T_7),length(T_8)];
+ 
+maxlength=max(lengthvec);
+Data=zeros(maxlength,Sets*2);
+Data_name={T_1, T_2, T_3, T_4, T_5, T_6, T_7, T_8};
+ 
+a=0; %Setting arbitrary values to set data
+for i=1:2:Sets*2
+    a=a+1;
+    Data(1:length(Data_name{a}),i:i+1)=Data_name{a};
+end 
+%Isolate Force Values
+Forces=zeros(maxlength,Sets);
+a=0;
+ 
+for i=1:2:Sets*2
+    a=a+1;
+    Forces(1:length(Data_name{a}),a)=Data(1:length(Data_name{a}),i);
+end
+%Isolate Displacement Values
+Disp=zeros(maxlength,Sets);
+a=0;
+for i=2:2:Sets*2
+    a=a+1;
+    Disp(1:length(Data_name{a}),a)=Data(1:length(Data_name{a}),i);
+end
+ 
+%Set Known Experiment Values 
+L=4.76; %Thickness of specimen [mm]
+A=(59*10^-3)^2; %Area of specimen [m^2] *Must be m^2 for Pa calculation
+%Determine Stress and Strain
+Stress=abs(Forces/A);
+Strain=Disp/L;
+ 
+%Eliminate Redundant Terms
+ 
+UniqueStrain=zeros(length(unique(Strain(:,2))),8);
+Loc=zeros(length(unique(Strain(:,2))),8);
+for i=1:Sets
+[US,USLoc]=unique(Strain(:,i));
+UniqueStrain(1:length(US),i)=US;
+Loc(1:length(USLoc),i)=USLoc;
+end 
+ 
+USt=zeros(length(UniqueStrain),8);
+for ii=1:Sets
+for i=1:length(UniqueStrain) %Eliminate repeating data for First data set
+    if Loc(i,ii)==0
+        break
+    else
+    USt(i,ii)=Stress(Loc(i,ii),ii);
+    end
+end
+end
+%% Plot All on a Single Graph
+Sets=8;
+figure 
+box on
+hold on
+LT={'s','o','d','h','s','o','d','h'};
+for i=1:Sets
+    MaxLoc=find(UniqueStrain(:,i)==max(UniqueStrain(:,i)));
+    if i<=4
+    plot(UniqueStrain(1:400:MaxLoc,i),USt(1:400:MaxLoc,i)*10^-6,LT{i},'MarkerSize',10,'MarkerEdgeColor','k')
+    else
+    plot(UniqueStrain(1:400:MaxLoc,i),USt(1:400:MaxLoc,i)*10^-6,LT{i},'MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','k')
+    end
+end 
+for i=1:Sets
+    MaxLoc=find(UniqueStrain(:,i)==max(UniqueStrain(:,i)));
+    plot(UniqueStrain(1:MaxLoc,i),USt(1:MaxLoc,i)*10^-6,'k-','LineWidth',1)
+end
+ 
+% UPDATE THE LEGEND**************
+legend({'DA00','DA02','DA04','DA06','DA09','DA14','DA27','Base Mat.'},'FontSize',12)
+set(legend,'location','best')
+xlabel('Strain [-]')
+ylabel('Stress [Mpa]')
+title('Compression Testing Comparison')
+axis([0 1 0 .3])
