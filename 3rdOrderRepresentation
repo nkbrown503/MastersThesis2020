@@ -1,0 +1,164 @@
+%% Comparing all the Current 3rd order Material Properties of the Metamaterials
+% to the third order representations of the optimized material properties
+ 
+%Code written by Nathan Brown in fulfillment of his master's thesis in
+%mechanical engineering 
+ 
+%Most recent edits: 3/3/2020 nkb
+ 
+%All Yeoh 3rd Order Coefficients Taken from ANSYS curve fitting data based
+%on compression testing of the materials 
+ 
+clc 
+clear
+close all 
+%Order of Coefficients in the "Test" Matrix are as follows 
+%DA09
+%DA14
+%DA27
+%DA06
+%DA04
+%DA02
+%DA00
+%Comp 30
+ 
+%Coefficients Derived from Yeoh 3rd Order on ANSYS when compression testing
+%data inserted 
+Test=[3225 95778 32987;646.23 1.5986E5 42500;1845.5 1.8768E5 2.8549E5;1759.8 79549 -7015.7;3260.1 66206 -11759; 838.91 23329 2454.7; 1271.3 6326.4 9544.4; 446.1 88326 2.5103E6]*10^-6;
+%Setting Up the Functions  
+ 
+%Equation Taken from Eq 2.1 in "Design of a Single Layer Metamaterial with
+%Applications for Pressure Offloading in Transtibial Amputees" by Nathan Brown 
+Sig09_test= @(ep) ((2*Test(1,1))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^0))+ ...
+  ((4*Test(1,2))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^1))+ ...
+ ((6*Test(1,3))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^2));
+Sig14_test= @(ep) ((2*Test(2,1))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^0))+ ...
+  ((4*Test(2,2))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^1))+ ...
+ ((6*Test(2,3))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^2));
+Sig27_test= @(ep) ((2*Test(3,1))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^0))+ ...
+  ((4*Test(3,2))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^1))+ ...
+ ((6*Test(3,3))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^2));
+Sig06_test= @(ep) ((2*Test(4,1))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^0))+ ...
+  ((4*Test(4,2))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^1))+ ...
+ ((6*Test(4,3))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^2));
+Sig04_test= @(ep) ((2*Test(5,1))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^0))+ ...
+  ((4*Test(5,2))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^1))+ ...
+ ((6*Test(5,3))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^2));
+Sig02_test= @(ep) ((2*Test(6,1))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^0))+ ...
+  ((4*Test(6,2))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^1))+ ...
+ ((6*Test(6,3))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^2));
+Sig00_test= @(ep) ((2*Test(7,1))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^0))+ ...
+  ((4*Test(7,2))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^1))+ ...
+ ((6*Test(7,3))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^2));
+Comp30_test= @(ep) ((2*Test(8,1))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^0))+ ...
+  ((4*Test(8,2))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^1))+ ...
+ ((6*Test(8,3))*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^2));
+ 
+%Determining the x and y values for each one of the functions 
+[xtest09,ytest09]=fplot(Sig09_test, [0 .999]);
+[xtest14,ytest14]=fplot(Sig14_test, [0 .999]);
+[xtest27,ytest27]=fplot(Sig27_test, [0 .999]);
+[xtest06,ytest06]=fplot(Sig06_test, [0 .999]);
+[xtest04,ytest04]=fplot(Sig04_test, [0 .999]);
+[xtest02,ytest02]=fplot(Sig02_test, [0 .999]);
+[xtest00,ytest00]=fplot(Sig00_test, [0 .999]);
+[XComp30,YComp30]=fplot(Comp30_test,[0 .999]);
+% ***********Enter Optimized Yeoh Coefficients Taken from Ansys****************** 
+%The optimization of the patellar tendon will only use the Middle and Outer
+%material 
+ 
+%Inner Material
+C11=7389; %Inner Material First Coef
+C12=47015;
+C13=70075;
+ 
+%Middle Material
+C21=6206; %Second Material First Coef 
+C22=1.702E5;
+C23=4.623E5;
+ 
+%Outer Material
+C31=8652; %Third Material First Coef 
+C32=2.6475E5;
+C33=3.6454E5;
+ 
+%Producing the 3rd order representations of the Optimized Material
+%Properties
+ 
+%Same equation as above
+Inner_Opt= @(ep) ((2*C11)*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^0))+ ...
+  ((4*C12)*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^1))+ ...
+ ((6*C13)*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^2));
+Mid_Opt= @(ep) ((2*C21)*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^0))+ ...
+  ((4*C22)*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^1))+ ...
+ ((6*C23)*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^2));
+Outer_Opt= @(ep) ((2*C31)*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^0))+ ...
+  ((4*C32)*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^1))+ ...
+ ((6*C33)*((1+ep)-((1+ep)^-2))*((((1+ep)^2)+(2*((1+ep)^-1))-3)^2));
+[IX,IY]=fplot(Inner_Opt, [0 .999]);
+[MX,MY]=fplot(Mid_Opt, [0 .999]);
+[OX,OY]=fplot(Outer_Opt, [0 .999]);
+ 
+%Plot the Results to Compare to Compression Testing 
+figure
+plot(xtest00(1:3:end),ytest00(1:3:end),'s','MarkerSize',10,'MarkerEdgeColor','k')
+hold on
+plot(xtest02(1:3:end),ytest02(1:3:end),'o','MarkerSize',10,'MarkerEdgeColor','k')
+plot(xtest04(1:3:end),ytest04(1:3:end),'d','MarkerSize',10,'MarkerEdgeColor','k')
+plot(xtest06(1:3:end),ytest06(1:3:end),'h','MarkerSize',10,'MarkerEdgeColor','k')
+plot(xtest09(1:3:end),ytest09(1:3:end),'s','MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','k')
+plot(xtest14(1:3:end),ytest14(1:3:end),'o','MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','k')
+plot(xtest27(1:3:end),ytest27(1:3:end),'d','MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','k')
+plot(XComp30(1:3:end),YComp30(1:3:end),'h','MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','k')
+plot(IX,IY*10^-6,'r-','LineWidth',5)
+plot(MX,MY*10^-6,'r-.','LineWidth',5)
+plot(OX,OY*10^-6,'r:','LineWidth',5)
+ 
+plot(xtest00,ytest00,'k-','LineWidth',1)
+hold on
+plot(xtest02,ytest02,'k-','LineWidth',1)
+plot(xtest04,ytest04,'k-','LineWidth',1)
+plot(xtest06,ytest06,'k-','LineWidth',1)
+plot(xtest09,ytest09,'k-','LineWidth',1)
+plot(xtest14,ytest14,'k-','LineWidth',1)
+plot(xtest27,ytest27,'k-','LineWidth',1)
+plot(XComp30,YComp30,'k-','LineWidth',1)
+ 
+legend({'DA00','DA02','DA04','DA06','DA09','DA14','DA27','Base Mat.','Inner Material','Middle Material','Outer Material'},'FontSize',12)
+title('Tibial End Material Optimization') 
+xlabel('Strain [-]')
+ylabel('Stress [MPa]')
+ 
+axis([0 0.4 0 0.3]) %Adjust the graph based on maximum deflection
+ 
+ 
+%% To Produce a Graph without the Optimized Material Properties 
+ 
+%Plot the Results to Compare to Compression Testing 
+figure
+plot(xtest00(1:3:end),ytest00(1:3:end),'s','MarkerSize',10,'MarkerEdgeColor','k')
+hold on
+plot(xtest02(1:3:end),ytest02(1:3:end),'o','MarkerSize',10,'MarkerEdgeColor','k')
+plot(xtest04(1:3:end),ytest04(1:3:end),'d','MarkerSize',10,'MarkerEdgeColor','k')
+plot(xtest06(1:3:end),ytest06(1:3:end),'h','MarkerSize',10,'MarkerEdgeColor','k')
+plot(xtest09(1:3:end),ytest09(1:3:end),'s','MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','k')
+plot(xtest14(1:3:end),ytest14(1:3:end),'o','MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','k')
+plot(xtest27(1:3:end),ytest27(1:3:end),'d','MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','k')
+plot(XComp30(1:3:end),YComp30(1:3:end),'h','MarkerSize',10,'MarkerEdgeColor','k','MarkerFaceColor','k')
+ 
+plot(xtest00,ytest00,'k-','LineWidth',1)
+hold on
+plot(xtest02,ytest02,'k-','LineWidth',1)
+plot(xtest04,ytest04,'k-','LineWidth',1)
+plot(xtest06,ytest06,'k-','LineWidth',1)
+plot(xtest09,ytest09,'k-','LineWidth',1)
+plot(xtest14,ytest14,'k-','LineWidth',1)
+plot(xtest27,ytest27,'k-','LineWidth',1)
+plot(XComp30,YComp30,'k-','LineWidth',1)
+legend({'DA00','DA02','DA04','DA06','DA09','DA14','DA27','Base Mat.'},'FontSize',12)
+title('Hyper-Elastic Material Property Comparison') 
+xlabel('Strain [-]')
+ylabel('Stress [MPa]')
+%Determine Upper Y Axis ;
+axis([0 1 0 0.3]) %Axis Determined Based on Maximum Deflection
+
